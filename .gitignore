@@ -185,4 +185,4 @@ coverage/
 docs/build/ 
 
 # 环境变量
-scripts/.env
+deployment/.env

@@ -297,7 +297,7 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
         StringBuilder command = new StringBuilder();
         
         // 第一部分：下载安装脚本  
-        command.append("curl -L https://raw.githubusercontent.com/bqlpfy/forward-panel/refs/heads/main/install.sh")
+        command.append("curl -L https://raw.githubusercontent.com/bqlpfy/forward-panel/refs/heads/main/deployment/install.sh")
                .append(" -o ./install.sh && chmod +x ./install.sh && ");
         
         // 第二部分：执行安装脚本（去掉-u参数）
