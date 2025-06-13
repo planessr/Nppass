@@ -183,3 +183,6 @@ coverage/
 
 # 文档生成
 docs/build/ 
+
+# 环境变量
+scripts/.env
