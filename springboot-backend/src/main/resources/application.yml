@@ -41,7 +41,7 @@ mybatis-plus:
 jwt-secret: ${JWT_SECRET}
 log-dir: ${LOG_DIR}
 
-# 验证码配置
+
 captcha:
   init-default-resource: true
   secondary:
