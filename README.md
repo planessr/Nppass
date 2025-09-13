@@ -2,11 +2,9 @@
 
 - 原作者已删库，仅为fork纪念版。
 
-- 方便后人使用。少有的开源面板，不该湮灭断绝。
-
 ---
 
-## flux-panel转发面板
+## Nppass转发面板
 
 本项目基于 [go-gost/gost](https://github.com/go-gost/gost) 和 [go-gost/x](https://github.com/go-gost/x) 两个开源库，实现了转发面板。
 
