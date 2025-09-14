@@ -31,8 +31,9 @@ curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/instal
 
 
 
-#### 默认管理员账号
+#### 访问Web
 
+- **web**: http://your-server-ip:6366
 - **账号**: admin_user
 - **密码**: admin_user
 
