@@ -29,8 +29,7 @@ curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/instal
 ```
 
 节点端安装说明（手动替换下载链接为下面的地址）：
-```bash
-curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
+```curl -L https://raw.githubusercontent.com/bqlpfy/flux-panel/refs/heads/main/install.sh -o ./install.sh && chmod +x ./install.sh && ./install.sh -a 45.196.239.214:6365 -s 6217eca5bead48c39523df19b98b8e56
 
 ```
 
