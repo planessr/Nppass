@@ -22,7 +22,7 @@ curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/instal
 
 ```
 
-#### 备份部署
+## 备份部署
 
 - **使用面板管理脚本「导出备份」**
 - **将sql备份文件改名为「gost.sql」**
