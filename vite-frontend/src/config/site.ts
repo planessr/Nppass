@@ -4,13 +4,13 @@ export type SiteConfig = typeof siteConfig;
 
 // 缓存相关常量
 const CACHE_PREFIX = 'vite_config_';
-const VERSION = "1.3.5";
+const VERSION = "1.3.4";
 const APP_VERSION = "1.0.3";
 
 const getInitialConfig = () => {
   if (typeof window === 'undefined') {
     return {
-      name: "Nppass",
+      name: "flux",
       version: VERSION,
       app_version: APP_VERSION,
     };
@@ -25,7 +25,7 @@ const getInitialConfig = () => {
       };
     }
   return {
-    name: "Nppass",
+    name: "flux",
     version: VERSION,
     app_version: APP_VERSION,
   };
