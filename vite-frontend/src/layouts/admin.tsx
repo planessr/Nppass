@@ -129,7 +129,7 @@ export default function AdminLayout({
   useEffect(() => {
     // 获取用户信息
     const name = localStorage.getItem('name') || 'Admin';
-    
+
     // 兼容处理：如果没有admin字段，根据role_id判断（0为管理员）
     let adminFlag = localStorage.getItem('admin') === 'true';
     if (localStorage.getItem('admin') === null) {
@@ -138,7 +138,7 @@ export default function AdminLayout({
       // 补充设置admin字段，避免下次再次判断
       localStorage.setItem('admin', adminFlag.toString());
     }
-    
+
     setUsername(name);
     setIsAdmin(adminFlag);
 
@@ -304,23 +304,6 @@ export default function AdminLayout({
             })}
           </ul>
         </nav>
-
-                {/* 底部版权信息 */}
-        <div className="px-4 py-2 pb-4 mt-auto flex-shrink-0">
-          <div className="text-center">
-            <p className="text-xs text-gray-400 dark:text-gray-500">
-              Powered by{' '}
-              <a 
-                href="https://github.com/planessr/Nppass" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-              >
-                Nppass
-              </a>
-            </p>
-          </div>
-        </div>
       </aside>
 
       {/* 主内容区域 */}
