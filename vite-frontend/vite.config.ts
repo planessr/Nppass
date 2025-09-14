@@ -8,12 +8,18 @@
      react(),
      legacy({
        targets: [
-         'chrome >= 87',  // 支持 BigInt 的最低版本 
+         'chrome >= 87',
          'firefox >= 78',
-         'safari >= 14',
-         'edge >= 88'
+         'safari >= 15',  // 关键修复：升级到 Safari 15+
+         'edge >= 89'      // 关键修复：升级到 Edge 89+
        ],
-       modernPolyfills: ['es.bigint']  // 关键修复：为旧浏览器添加 BigInt polyfill 
+       modernPolyfills: [
+         'es.bigint',
+         'es.object.entries'  // 增强兼容性 
+       ],
+       polyfills: [            // 显式添加传统浏览器 polyfill
+         'es.bigint.constructor'
+       ]
      })
    ],
    base: './',
@@ -30,12 +36,19 @@
      outDir: 'dist',
      sourcemap: false,
      minify: false,
-     target: 'es2020',  // 关键修复：明确设置支持 BigInt 的构建目标 
+     target: 'es2020',
      rollupOptions: {
        treeshake: false,
+       output: {  // 关键修复：禁用语法转换 
+         generatedCode: 'es2020',
+         preserveModules: true 
+       }
      }
    },
    esbuild: {
-     target: 'es2020'  // 关键修复：确保 esbuild 也使用正确目标 
+     target: 'es2020',
+     supported: {  // 关键修复：显式启用 BigInt
+       'bigint': true 
+     }
    }
  });
