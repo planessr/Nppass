@@ -10,6 +10,9 @@ export default defineConfig({
       targets: ['defaults', 'not IE 11']
     })
   ],
+esbuild: {
+    target: 'es2021' // 新增：指定目标为 es2021，支持 BigInt 字面量
+  },
   base: './',    
   resolve: {
     alias: {
