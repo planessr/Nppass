@@ -29,8 +29,8 @@ curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/instal
 ```
 
 节点端安装说明（手动替换下载链接为下面的地址）：
-```牛
-
+```
+1
 ```
 
 
