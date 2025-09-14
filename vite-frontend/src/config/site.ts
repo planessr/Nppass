@@ -10,7 +10,7 @@ const APP_VERSION = "1.0.3";
 const getInitialConfig = () => {
   if (typeof window === 'undefined') {
     return {
-      name: "flux",
+      name: "Nppass",
       version: VERSION,
       app_version: APP_VERSION,
     };
@@ -25,7 +25,7 @@ const getInitialConfig = () => {
       };
     }
   return {
-    name: "flux",
+    name: "Nppass",
     version: VERSION,
     app_version: APP_VERSION,
   };
