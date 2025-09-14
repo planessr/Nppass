@@ -29,7 +29,7 @@ curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/instal
 ```
 
 节点安装说明（手动替换安装地址为下面地址）：
-```curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/install.sh -o ./install.sh && chmod +x ./install.sh && ./install.sh -a 面板机IP:6365 -s 节点密钥
+```curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/install.sh -o ./install.sh && chmod +x ./install.sh && ./install.sh -a IP:6365 -s 
 
 ```
 
