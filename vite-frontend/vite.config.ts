@@ -26,6 +26,7 @@ export default defineConfig({
     minify: false,  
     rollupOptions: {
       treeshake: false,
-    }
+    },
+    target: 'es2021'
   }
 });
