@@ -7,31 +7,14 @@
    plugins: [
      react(),
      legacy({
-       targets: [
-         'chrome >= 87',
-         'firefox >= 78',
-         'safari >= 15',  // 关键修复：升级到 Safari 15+
-         'edge >= 89'      // 关键修复：升级到 Edge 89+
-       ],
-       modernPolyfills: [
-         'es.bigint',
-         'es.object.entries'  // 增强兼容性 
-       ],
-       polyfills: [            // 显式添加传统浏览器 polyfill
-         'es.bigint.constructor'
-       ]
+       targets: ['chrome>=87', 'firefox>=78', 'safari>=15', 'edge>=89'],
+       modernPolyfills: ['es.bigint', 'es.object.entries'],
+       polyfills: ['es.bigint.constructor']
      })
    ],
    base: './',
-   resolve: {
-     alias: {
-       "@": path.resolve(__dirname, "./src"),
-     },
-   },
-   server: {
-     port: 3000,
-     host: '0.0.0.0'
-   },
+   resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
+   server: { port: 3000, host: '0.0.0.0' },
    build: {
      outDir: 'dist',
      sourcemap: false,
@@ -39,16 +22,15 @@
      target: 'es2020',
      rollupOptions: {
        treeshake: false,
-       output: {  // 关键修复：禁用语法转换 
+       output: {
          generatedCode: 'es2020',
-         preserveModules: true 
+         preserveModules: false, // 必须关闭 
+         preserveEntrySignatures: 'strict' // 严格模式
        }
      }
    },
    esbuild: {
      target: 'es2020',
-     supported: {  // 关键修复：显式启用 BigInt
-       'bigint': true 
-     }
+     supported: { 'bigint': true }
    }
  });
