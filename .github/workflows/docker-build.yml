@@ -133,8 +133,8 @@ jobs:
           docker buildx build \
             --platform linux/amd64 \
             --push \
-            -t bqlpfy/vite-frontend \
-            ./vite-frontend
+            -t xbone01/nppass \
+            ./nppass
 
   build-java:
     if: contains(github.event.head_commit.message, '[skip java]') == false
@@ -188,5 +188,5 @@ jobs:
           docker buildx build \
             --platform linux/amd64 \
             --push \
-            -t bqlpfy/springboot-backend \
-            ./springboot-backend
+            -t xbone01/nppass-server \
+            ./nppass-server
