@@ -7,10 +7,16 @@
    plugins: [
      react(),
      legacy({
-       targets: ['defaults', 'not IE 11']
+       targets: [
+         'chrome >= 87',  // 支持 BigInt 的最低版本 
+         'firefox >= 78',
+         'safari >= 14',
+         'edge >= 88'
+       ],
+       modernPolyfills: ['es.bigint']  // 关键修复：为旧浏览器添加 BigInt polyfill 
      })
    ],
-   base: './',    
+   base: './',
    resolve: {
      alias: {
        "@": path.resolve(__dirname, "./src"),
@@ -21,14 +27,15 @@
      host: '0.0.0.0'
    },
    build: {
-     // 新增的构建目标配置
-     target: ['es2020', 'chrome89', 'edge89', 'firefox89', 'safari15'],
-     // 您原有的构建配置保持不变 
      outDir: 'dist',
      sourcemap: false,
-     minify: false,  
+     minify: false,
+     target: 'es2020',  // 关键修复：明确设置支持 BigInt 的构建目标 
      rollupOptions: {
        treeshake: false,
      }
+   },
+   esbuild: {
+     target: 'es2020'  // 关键修复：确保 esbuild 也使用正确目标 
    }
  });
