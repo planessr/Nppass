@@ -28,7 +28,7 @@ curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/instal
 
 ```
 
-节点端安装说明（请将下载地址手动替换为下面的地址）：
+节点端安装说明（手动替换下载链接为下面的地址）：
 ```bash
 curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
 
