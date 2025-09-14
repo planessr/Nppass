@@ -16,13 +16,13 @@
 ### Docker Compose部署
 #### 快速部署
 
-面板端：
+面板端管理脚本：
 ```bash
 curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/panel_install.sh -o panel_install.sh && chmod +x panel_install.sh && ./panel_install.sh
 
 ```
 
-节点端：
+节点端管理脚本：
 ```bash
 curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
 
