@@ -27,8 +27,5 @@ export default defineConfig({
     rollupOptions: {
       treeshake: false,
     }
-  },
-  esbuild: {
-    target: 'es2021'   // 新增这部分
   }
 });
