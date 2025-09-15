@@ -1,16 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import legacy from '@vitejs/plugin-legacy'
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    legacy({
-      targets: ['defaults', 'not IE 11']
-    })
-  ],
-  base: './',    
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -23,9 +17,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
-    minify: false,  
+    minify: false,       // 先关闭压缩，排查是否压缩导致
     rollupOptions: {
-      treeshake: false,
+      treeshake: false,  // 关闭 treeshake（摇树优化），排查是否优化导致
     }
   }
 });
