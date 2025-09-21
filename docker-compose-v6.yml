@@ -54,7 +54,7 @@ services:
       start_period: 90s
 
   frontend:
-    image: deepmanshub/vite-frontend:latest
+    image: xbone01/vite-frontend:latest
     container_name: vite-frontend
     restart: unless-stopped
     ports:
