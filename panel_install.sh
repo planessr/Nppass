@@ -8,10 +8,10 @@ export LC_ALL=C
 
 
 # 全局下载地址配置
-DOCKER_COMPOSEV4_URL="https://raw.githubusercontent.com/planessr/Nppass_dev/refs/heads/main/docker-compose-v4.yml"
-DOCKER_COMPOSEV6_URL="https://raw.githubusercontent.com/planessr/Nppass_dev/refs/heads/main/docker-compose-v6.yml"
-GOST_SQL_URL="https://raw.githubusercontent.com/planessr/Nppass_dev/refs/heads/main/gost.sql"
-PROXY_SH_URL="https://raw.githubusercontent.com/planessr/Nppass_dev/refs/heads/main/proxy.sh"
+DOCKER_COMPOSEV4_URL="https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/docker-compose-v4.yml"
+DOCKER_COMPOSEV6_URL="https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/docker-compose-v6.yml"
+GOST_SQL_URL="https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/gost.sql"
+PROXY_SH_URL="https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/proxy.sh"
 
 COUNTRY=$(curl -s https://ipinfo.io/country)
 if [ "$COUNTRY" = "CN" ]; then
@@ -153,7 +153,8 @@ show_menu() {
   echo "3. 卸载面板"
   echo "4. 导出备份"
   echo "5. 安装并配置反向代理（Caddy）"
-  echo "6. 退出"
+  echo "6. 安装Docker"
+  echo "0. 退出"
   echo "==============================================="
 }
 
@@ -230,6 +231,8 @@ EOF
 
   echo "🎉 部署完成"
   echo "🌐 访问地址: http://服务器IP:$FRONTEND_PORT"
+  echo "📖 部署完成后请阅读下使用文档，求求了啊，不要上去就是一顿操作"
+  echo "📚 文档地址: 暂无"
   echo "💡 默认管理员账号: admin_user / admin_user"
   echo "⚠️  登录后请立即修改默认密码！"
 
@@ -1047,13 +1050,109 @@ uninstall_panel() {
   echo "✅ 卸载完成"
 }
 
+# 安装docket
+install_docker() {
+   #!/bin/bash 
+ set -euo pipefail  # 增强错误处理 
+  
+ # === 网络检查函数 ===
+ check_network() {
+   if ! curl -Is https://download.docker.com >/dev/null 2>&1; then 
+     echo "⚠️ 网络连接异常，尝试使用国内镜像源"
+     MIRROR_SOURCE="https://mirrors.aliyun.com/docker-ce"
+   else 
+     MIRROR_SOURCE="https://download.docker.com"
+   fi 
+ }
+  
+ # === 主安装流程 === 
+ echo "=== 系统环境检测 ===" 
+ check_network 
+ echo "使用源: $MIRROR_SOURCE"
+  
+ # 1. 更新系统并修复可能损坏的包 
+ echo "=== 修复系统依赖 ===" 
+ sudo apt-get update --fix-missing || {
+   echo "❗ 更新失败，尝试修复软件源配置..."
+   sudo sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+   sudo apt-get update
+ }
+ sudo apt-get install -y --fix-broken
+  
+ # 2. 安装核心依赖（增加缺失包检查）
+ echo "=== 安装核心依赖 ===" 
+ required_pkgs=(
+   apt-transport-https 
+   ca-certificates 
+   curl 
+   gnupg 
+   lsb-release 
+   software-properties-common 
+ )
+  
+ for pkg in "${required_pkgs[@]}"; do
+   if ! dpkg -l | grep -q "$pkg"; then 
+     sudo apt-get install -y "$pkg" || echo "⚠️ 安装 $pkg 失败，尝试继续"
+   fi 
+ done 
+  
+ # 3. 添加 Docker GPG 密钥（增加重试机制）
+ echo "=== 添加 Docker GPG 密钥 ===" 
+ for i in {1..3}; do 
+   curl -fsSL $MIRROR_SOURCE/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && break 
+   echo "❌ 密钥下载失败，重试 $i/3"
+   sleep 2
+ done
+  
+ # 4. 添加仓库（自动检测架构）
+ echo "=== 添加 Docker 仓库 ==="
+ arch=$(dpkg --print-architecture)
+ codename=$(lsb_release -cs)
+ echo "deb [arch=$arch signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] $MIRROR_SOURCE/linux/ubuntu $codename stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 
+  
+ # 5. 安装 Docker（指定版本+容错）
+ echo "=== 安装 Docker Engine ==="
+ sudo apt-get update 
+ sudo apt-get install -y \
+   docker-ce=5:20.10.24~3-0~ubuntu-jammy \
+   docker-ce-cli=5:20.10.24~3-0~ubuntu-jammy \
+   containerd.io || {
+   echo "❗ 指定版本安装失败，尝试安装最新稳定版"
+   sudo apt-get install -y docker-ce docker-ce-cli containerd.io 
+ }
+  
+ # 6. 验证 Docker
+ echo "=== 验证 Docker 状态 ===" 
+ sudo systemctl enable --now docker 
+ sudo docker run --rm hello-world | grep "Hello from Docker!" && echo "✅ Docker 验证成功"
+  
+ # 7. 安装 Docker Compose（增加校验）
+ echo "=== 安装 Docker Compose ==="
+ compose_url="https://github.com/docker/compose/releases/download/v2.17.3/docker-compose-$(uname -s)-$(uname -m)"
+ sudo curl -L "$compose_url" -o /usr/local/bin/docker-compose 
+ sudo chmod +x /usr/local/bin/docker-compose
+ sudo sh -c "docker-compose --version | grep 'Docker Compose version' >/dev/null" && echo "✅ Compose 安装成功"
+  
+ # 8. 用户组配置
+ read -p "是否将用户 $USER 添加到 docker 组？(y/n) " -n 1 -r 
+ echo 
+ if $ ]]; then 
+   sudo usermod -aG docker $USER
+   echo "⚠️ 需要重新登录生效！当前会话请使用 sudo 运行 docker 命令"
+ fi 
+  
+ echo "=== 安装完成 ==="
+ docker --version 
+ docker-compose --version
+}
+
 # 主逻辑
 main() {
 
   # 显示交互式菜单
   while true; do
     show_menu
-    read -p "请输入选项 (1-5): " choice
+    read -p "请输入选项 (1-6): " choice
 
     case $choice in
       1)
@@ -1082,6 +1181,11 @@ main() {
         exit 0
         ;;
       6)
+        install_docker
+        delete_self
+        exit 0
+        ;;
+      0)
         echo "👋 退出脚本"
         delete_self
         exit 0
