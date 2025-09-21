@@ -335,12 +335,12 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
      */
     private R buildInstallCommand(Node node) {
         ViteConfig viteConfig = viteConfigService.getOne(new QueryWrapper<ViteConfig>().eq("name", "ip"));
-        if (viteConfig == null) return R.err("请先前往网站配置中设置ip");
+        if (viteConfig == null) return R.err("请前往网站配置中设置server-ip");
 
         StringBuilder command = new StringBuilder();
         
         // 第一部分：下载安装脚本  
-        command.append("curl -L https://raw.githubusercontent.com/deepmanshub/flux-panel/refs/heads/main/install.sh")
+        command.append("curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/install.sh")
                .append(" -o ./install.sh && chmod +x ./install.sh && ");
         
         // 处理服务器地址，如果是IPv6需要添加方括号
@@ -435,3 +435,4 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
     }
 
 }
+
