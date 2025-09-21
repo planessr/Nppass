@@ -309,7 +309,7 @@ export default function AdminLayout({
         <div className="px-4 py-2 pb-4 mt-auto flex-shrink-0">
           <div className="text-center">
             <p className="text-xs text-gray-400 dark:text-gray-500">
-              Powered by flux-panel
+              Powered by Nppass
             </p>
           </div>
         </div>
