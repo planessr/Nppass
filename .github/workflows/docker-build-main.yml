@@ -153,7 +153,7 @@ jobs:
           docker buildx build \
             --platform linux/amd64 \
             --push \
-            -t xbone01/vite-frontend \
+            -t xbone01/nppass \
             ./vite-frontend
 
   build-java:
@@ -208,5 +208,5 @@ jobs:
           docker buildx build \
             --platform linux/amd64 \
             --push \
-            -t deepmanshub/springboot-backend \
+            -t xbone01/nppass-server \
             ./springboot-backend
