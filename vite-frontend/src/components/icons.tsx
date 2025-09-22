@@ -7,23 +7,20 @@ export const Logo: React.FC<IconSvgProps> = ({
   height,
   ...props
 }) => (
-  <svg
-  fill="none"
-  viewBox="0 0 32 32"
-  width="32"
-  height="32"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path d="M6 16 L6 8 L11 8 L11 12 L14 12 L14 8 L17 8 L17 16 L11 16 Z" fill="black"/>
-  <path d="M17 8 L11 16 L8 16 L15 8 Z" fill="#A2E83D"/>
-  <path d="M17 8 L14 5 L11 8 L11 12 L14 15 L17 12 Z" fill="none" stroke="black" stroke-width="0.5"/>
-  <path d="M16 9 L13 6 L10 9 L10 11 L13 14 L16 11 Z" fill="none" stroke="black" stroke-width="0.5"/>
-  <rect x="9.5" y="14" width="1.5" height="2" fill="black"/>
-  <rect x="9" y="12" width="2.5" height="2" fill="black"/>
-  <circle cx="10.25" cy="13" r="0.3" fill="white"/>
-  <path d="M10.25 14 L10.25 16" stroke="white" stroke-width="0.3"/>
-  <text x="18" y="22" font-family="Arial" font-size="8" font-weight="bold" fill="black">pass</text>
-</svg>
+    <svg
+    fill="none"
+    height={size || height}
+    viewBox="0 0 32 32"
+    width={size || height}
+    {...props}
+  >
+    <path
+      clipRule="evenodd"
+      d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
+      fill="currentColor"
+      fillRule="evenodd"
+    />
+  </svg>
 );
 
 export const MoonFilledIcon = ({
