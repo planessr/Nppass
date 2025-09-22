@@ -1,11 +1,9 @@
 ## Nppass转发面板
 
 可视化的gost转发面板
-
 <div align="center">
-  <img src="https://xcloud.hljone.com/f/jXIY/nppass.png" alt="Nppass Logo" width="200"> <!-- width 可按需调整尺寸 -->
+  <img src="https://xcloud.hljone.com/f/jXIY/nppass.png" alt="Nppass Logo" width="200" style="border-radius: 12px; overflow: hidden;">
 </div>
-
 ---
 ## 文档地址：
 - [文档地址](https://brunuhville.github.io/flux-panel)
