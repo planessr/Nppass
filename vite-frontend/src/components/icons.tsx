@@ -14,19 +14,14 @@ export const Logo: React.FC<IconSvgProps> = ({
   height="32"
   xmlns="http://www.w3.org/2000/svg"
 >
-  <!-- 黑色字母 N 及结构 -->
   <path d="M6 16 L6 8 L11 8 L11 12 L14 12 L14 8 L17 8 L17 16 L11 16 Z" fill="black"/>
-  <!-- 绿色斜块 -->
   <path d="M17 8 L11 16 L8 16 L15 8 Z" fill="#A2E83D"/>
-  <!-- 网格结构 -->
   <path d="M17 8 L14 5 L11 8 L11 12 L14 15 L17 12 Z" fill="none" stroke="black" stroke-width="0.5"/>
   <path d="M16 9 L13 6 L10 9 L10 11 L13 14 L16 11 Z" fill="none" stroke="black" stroke-width="0.5"/>
-  <!-- 锁的形状 -->
   <rect x="9.5" y="14" width="1.5" height="2" fill="black"/>
   <rect x="9" y="12" width="2.5" height="2" fill="black"/>
   <circle cx="10.25" cy="13" r="0.3" fill="white"/>
   <path d="M10.25 14 L10.25 16" stroke="white" stroke-width="0.3"/>
-  <!-- 字母 pass -->
   <text x="18" y="22" font-family="Arial" font-size="8" font-weight="bold" fill="black">pass</text>
 </svg>
 );
