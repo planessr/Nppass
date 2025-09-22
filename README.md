@@ -7,7 +7,7 @@
 
 ---
 ## 文档地址：
-- [文档地址](https://brunuhville.github.io/flux-panel)
+- [第三方文档地址](https://brunuhville.github.io/flux-panel)
 ---
 
 ### Docker Compose部署
