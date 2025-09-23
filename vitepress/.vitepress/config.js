@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'flux-panel',
   description: '基于gost的转发面板',
-  base: '/flux-panel/',
+  base: '/Nppass/',
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
