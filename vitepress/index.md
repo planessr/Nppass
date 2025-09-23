@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "Flux"
+  name: "Nppass"
   text: "基于gost的转发面板"
   tagline: "功能强大的流量转发管理平台，支持灵活的流量计费和限速功能"
   actions:
@@ -10,8 +10,8 @@ hero:
       text: 快速开始
       link: /getting-started
     - theme: alt
-      text: 查看源码（仅为fork纪念版，原作者已删库。方便后人使用。十分少见的开源面板，不该湮灭断绝。）
-      link: https://github.com/BrunuhVille/flux-panel
+      text:  Github仓库
+      link: https://github.com/planessr/Nppass
 
 features:
   - icon: 🔄
