@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'flux-panel',
+  title: 'Nppass',
   description: '基于gost的转发面板',
   base: '/Nppass/',
   themeConfig: {
