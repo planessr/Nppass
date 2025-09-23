@@ -1,6 +1,6 @@
 # 快速开始
 
-本指南将帮助您快速安装和配置flux-panel，让您在几分钟内开始使用流量转发功能。
+本指南将帮助您快速安装和配置Nppass，让您在几分钟内开始使用流量转发功能。
 
 ## 系统要求
 
@@ -18,7 +18,7 @@
 我们提供了交互式安装脚本，会自动检测系统环境并引导您完成配置：
 
 ```bash
-curl -L https://raw.githubusercontent.com/BrunuhVille/flux-panel/refs/heads/main/panel_install.sh -o panel_install.sh && chmod +x panel_install.sh && ./panel_install.sh
+curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/panel_install.sh -o panel_install.sh && chmod +x panel_install.sh && ./panel_install.sh
 ```
 
 ### 安装流程说明
