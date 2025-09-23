@@ -41,3 +41,4 @@ journalctl -u gost -f
 ```
 
 按 `Ctrl+C` 退出日志查看
+
