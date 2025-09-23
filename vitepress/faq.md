@@ -6,7 +6,7 @@
 安装、更新、卸载面板均使用同一条命令，运行后在菜单中选择对应操作：
 
 ```bash
-curl -L https://raw.githubusercontent.com/Brunuille/flux-panel/refs/heads/main/panel_install.sh -o panel_install.sh && chmod +x panel_install.sh && ./panel_install.sh
+curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/panel_install.sh -o panel_install.sh && chmod +x panel_install.sh && ./panel_install.sh
 ```
 
 ## 节点管理脚本
@@ -14,7 +14,7 @@ curl -L https://raw.githubusercontent.com/Brunuille/flux-panel/refs/heads/main/p
 节点的“更新”和“卸载”可直接使用以下命令，安装脚本请前往面板系统的“节点管理”页面复制获取：
 
 ```bash
-curl -L https://raw.githubusercontent.com/BrunuhVille/flux-panel/refs/heads/main/install.sh -o ./install.sh && chmod +x ./install.sh && ./install.sh
+curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/install.sh -o ./install.sh && chmod +x ./install.sh && ./install.sh
 ```
 
 ## 日志查看
