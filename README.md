@@ -7,7 +7,7 @@
 
 ---
 ## 文档地址：
-- [第三方文档地址](https://brunuhville.github.io/flux-panel)
+- [文档地址](https://planessr.github.io/Nppass)
 ---
 
 ### Docker Compose部署
