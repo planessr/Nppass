@@ -7,14 +7,11 @@ hero:
   tagline: "功能强大的流量转发管理平台，支持灵活的流量计费和限速功能"
   actions:
     - theme: brand
-      text: "DramCloud"
-      link: https://whmcs.as211392.com/
-    - theme: brand
       text: 快速开始
       link: /getting-started
     - theme: alt
-      text: 查看源码
-      link: https://github.com/bqlpfy/flux-panel
+      text: 查看源码（仅为fork纪念版，原作者已删库。方便后人使用。十分少见的开源面板，不该湮灭断绝。）
+      link: https://github.com/BrunuhVille/flux-panel
 
 features:
   - icon: 🔄
@@ -50,20 +47,7 @@ features:
     details: 支持 Docker Compose 一键部署，简化安装和维护流程
 ---
 
-
-## 社区支持
-
-如果您在使用过程中遇到问题或有功能建议，欢迎：
-
-- 📱 [加入 Telegram 群组](https://t.me/+wdVDni1fdyI0YzE1)
-- 🐛 [报告问题](https://github.com/bqlpfy/flux-panel/issues)
-- 💡 [功能建议](https://github.com/bqlpfy/flux-panel/issues)
-- 🤝 [参与贡献](https://github.com/bqlpfy/flux-panel/pulls)
-
 ## 免责声明
 
 本项目仅供个人学习与研究使用，基于开源项目进行二次开发。使用本项目所带来的任何风险由使用者自行承担。请确保在合法、合规、安全的前提下使用本项目。
 
----
-
-**本网站由 [DreamCloud](https://whmcs.as211392.com/) 提供防御支持** 
