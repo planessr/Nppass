@@ -32,7 +32,10 @@ curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/panel_
    1. 安装面板      ← 选择这个
    2. 更新面板
    3. 卸载面板
-   4. 退出
+   4. 导出备份
+   5. 安装并配置反向代理（Caddy）
+   6. 安装Docker
+   0. 退出
    ===============================================
    ```
 
