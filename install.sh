@@ -1,6 +1,6 @@
 #!/bin/bash
 # 下载地址
-DOWNLOAD_URL="https://github.com/planessr/Nppass/releases/download/gost-latest/gost"
+DOWNLOAD_URL="https://release-assets.githubusercontent.com/github-production-release-asset/1060727134/fcf2b32c-2987-4598-bf0c-6ce05621cfdf?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-03T19%3A52%3A34Z&rscd=attachment%3B+filename%3Dgost.bin&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-03T18%3A52%3A10Z&ske=2025-10-03T19%3A52%3A34Z&sks=b&skv=2018-11-09&sig=pfcg3aWDv7a4G6YWsNiIT6XtjfuOuIu4cGorhnB9Wa4%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTUxNzgzMSwibmJmIjoxNzU5NTE3NTMxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.IdAu937HxO6GsELMJ4oUo4iFRAlhC93gfA2xjktIzyg&response-content-disposition=attachment%3B%20filename%3Dgost.bin&response-content-type=application%2Foctet-stream"
 INSTALL_DIR="/etc/gost"
 COUNTRY=$(curl -s https://ipinfo.io/country)
 if [ "$COUNTRY" = "CN" ]; then
