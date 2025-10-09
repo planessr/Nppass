@@ -256,3 +256,6 @@ gitee/
 *.cert
 android-app/
 ios-app/
+doraemon.jks
+flux.ipa
+device.id
