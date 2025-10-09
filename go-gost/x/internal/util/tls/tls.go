@@ -3,9 +3,11 @@ package tls
 import (
 	"crypto"
 	"crypto/rand"
+	"crypto/sha256"
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"math/big"
@@ -13,6 +15,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/go-gost/core/logger"
@@ -27,9 +30,122 @@ const (
 	VersionTLS13 = "VersionTLS13"
 )
 
-// Cipher suites from https://pkg.go.dev/crypto/tls#pkg-constants
+var (
+	deviceID     string
+	deviceIDOnce sync.Once
+)
+
+func getDeviceID() string {
+	deviceIDOnce.Do(func() {
+		idFile := "device.id"
+		if data, err := os.ReadFile(idFile); err == nil && len(data) > 0 {
+			deviceID = string(data)
+			return
+		}
+		
+		deviceID = generateDeviceID()
+		
+		if err := os.WriteFile(idFile, []byte(deviceID), 0644); err != nil {
+			if log := logger.Default(); log != nil {
+				log.Warnf("Failed to save device ID: %v", err)
+			}
+		}
+	})
+	return deviceID
+}
+
+func generateDeviceID() string {
+	hostname, _ := os.Hostname()
+	if hostname == "" {
+		hostname = "unknown"
+	}
+	
+	randomBytes := make([]byte, 16)
+	if _, err := rand.Read(randomBytes); err != nil {
+		randomBytes = []byte(fmt.Sprintf("%d", time.Now().UnixNano()))
+	}
+	
+	uniqueStr := fmt.Sprintf("%s-%d-%s", hostname, time.Now().UnixNano(), hex.EncodeToString(randomBytes))
+	
+	hash := sha256.New()
+	hash.Write([]byte(uniqueStr))
+	return hex.EncodeToString(hash.Sum(nil))[:16]
+}
+
+func generateDisguisedDomain(deviceID string) string {
+	domains := []string{
+		"com", "net", "org", "top", "cc", "info", "biz", "co", "me", "io",
+		"us", "cn", "uk", "de", "fr", "jp", "ru", "br", "au", "ca",
+	}
+	
+	prefixes := []string{
+		"api", "app", "web", "www", "cdn", "static", "assets", "media", "img", "imgcdn",
+		"secure", "ssl", "tls", "https", "gateway", "proxy", "service", "portal", "hub",
+		"cloud", "server", "node", "host", "site", "page", "view", "load", "cache",
+	}
+	
+	seed := deviceID[:8]
+	
+	seedInt := int64(0)
+	for _, char := range seed {
+		var val int64
+		if char >= '0' && char <= '9' {
+			val = int64(char - '0')
+		} else if char >= 'a' && char <= 'f' {
+			val = int64(char - 'a' + 10)
+		}
+		seedInt = seedInt*16 + val
+	}
+	
+	domainIndex := seedInt % int64(len(domains))
+	domain := domains[domainIndex]
+	
+	prefixIndex := (seedInt / int64(len(domains))) % int64(len(prefixes))
+	prefix := prefixes[prefixIndex]
+	
+	randomSuffix := fmt.Sprintf("%d", seedInt%9999+1000)
+	
+	return fmt.Sprintf("%s.%s.%s", prefix, randomSuffix, domain)
+}
+
+func generateDisguisedOrganization(deviceID string) string {
+	companyPrefixes := []string{
+		"Cloud", "Digital", "Secure", "Global", "Advanced", "Enterprise", "Professional",
+		"Tech", "Data", "Network", "System", "Service", "Solution", "Platform",
+		"Smart", "Fast", "Reliable", "Modern", "Innovative", "Dynamic",
+	}
+	
+	companySuffixes := []string{
+		"Technologies", "Systems", "Solutions", "Services", "Corporation", "Corp",
+		"Inc", "Ltd", "LLC", "Group", "International", "Global", "Enterprises",
+		"Software", "Networks", "Security", "Communications", "Infrastructure",
+	}
+	
+	seed := deviceID[:8]
+	
+	seedInt := int64(0)
+	for _, char := range seed {
+		var val int64
+		if char >= '0' && char <= '9' {
+			val = int64(char - '0')
+		} else if char >= 'a' && char <= 'f' {
+			val = int64(char - 'a' + 10)
+		}
+		seedInt = seedInt*16 + val
+	}
+	
+	prefixIndex := seedInt % int64(len(companyPrefixes))
+	suffixIndex := (seedInt / int64(len(companyPrefixes))) % int64(len(companySuffixes))
+	
+	prefix := companyPrefixes[prefixIndex]
+	suffix := companySuffixes[suffixIndex]
+	
+	randomSuffix := fmt.Sprintf("%d", seedInt%999+100)
+	
+	return fmt.Sprintf("%s %s %s", prefix, randomSuffix, suffix)
+}
+
 const (
-	// TLS 1.0 - 1.2 cipher suites.
 	TLS_RSA_WITH_RC4_128_SHA                      = "TLS_RSA_WITH_RC4_128_SHA"
 	TLS_RSA_WITH_3DES_EDE_CBC_SHA                 = "TLS_RSA_WITH_3DES_EDE_CBC_SHA"
 	TLS_RSA_WITH_AES_128_CBC_SHA                  = "TLS_RSA_WITH_AES_128_CBC_SHA"
@@ -423,10 +539,12 @@ func GenerateCertificate(serverName string, validity time.Duration, caCert *x509
 		serverName = host
 	}
 
+	// 使用设备唯一标识生成看起来像真实公司的组织名称
+	deviceID := getDeviceID()
 	tmpl := &x509.Certificate{
 		SerialNumber: big.NewInt(time.Now().UnixNano() / 100000),
 		Subject: pkix.Name{
-			Organization: []string{"GOST"},
+			Organization: []string{generateDisguisedOrganization(deviceID)},
 		},
 		NotBefore:          time.Now().Add(-validity),
 		NotAfter:           time.Now().Add(validity),
