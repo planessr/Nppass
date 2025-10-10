@@ -216,7 +216,16 @@ export default function DashboardPage() {
     }
   };
 
-  const getExpirationInfo = (expTime?: string) => {
+    const getExpirationInfo = (expTime?: string) => {
+    // 管理员直接显示永久
+    if (isAdmin) {
+      return {
+        dateText: '永久',
+        remainingText: '∞',
+        isExpiringSoon: false
+      };
+    }
+
     if (!expTime) {
       return {
         dateText: '永久',
@@ -300,11 +309,22 @@ export default function DashboardPage() {
 
 
   const getExpStatus = (expTime?: string) => {
-    if (!expTime) return { 
-      color: 'text-green-600 dark:text-green-400', 
-      bg: 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20',
-      text: '永久' 
-    };
+    // 管理员直接显示永久
+    if (isAdmin) {
+      return { 
+        color: 'text-green-600 dark:text-green-400', 
+        bg: 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20',
+        text: '永久' 
+      };
+    }
+
+    if (!expTime) {
+      return { 
+        color: 'text-green-600 dark:text-green-400', 
+        bg: 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20',
+        text: '永久' 
+      };
+    }
 
     const now = new Date();
     const expDate = new Date(expTime);
