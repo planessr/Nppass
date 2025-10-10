@@ -216,6 +216,54 @@ export default function DashboardPage() {
     }
   };
 
+  const getExpirationInfo = (expTime?: string) => {
+    if (!expTime) {
+      return {
+        dateText: '永久',
+        remainingText: '∞',
+        isExpiringSoon: false
+      };
+    }
+
+    const expirationDate = new Date(expTime);
+    if (isNaN(expirationDate.getTime())) {
+      return {
+        dateText: expTime,
+        remainingText: '--',
+        isExpiringSoon: false
+      };
+    }
+
+    const formatDateNumber = (value: number) => value.toString().padStart(2, '0');
+    const formattedDate = `${expirationDate.getFullYear()}-${formatDateNumber(expirationDate.getMonth() + 1)}-${formatDateNumber(expirationDate.getDate())}`;
+
+    const now = new Date();
+    const diffTime = expirationDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 0) {
+      return {
+        dateText: formattedDate,
+        remainingText: `${diffDays}天`,
+        isExpiringSoon: diffDays < 7
+      };
+    }
+
+    if (diffDays === 0) {
+      return {
+        dateText: formattedDate,
+        remainingText: '0天',
+        isExpiringSoon: true
+      };
+    }
+
+    return {
+      dateText: formattedDate,
+      remainingText: '已过期',
+      isExpiringSoon: true
+    };
+  };
+
   const formatNumber = (value: number): string => {
     // 99999 表示无限制
     if (value === 99999) {
@@ -564,13 +612,22 @@ export default function DashboardPage() {
 
   const calculateForwardBillingFlow = (forward: Forward): number => {
     if (!forward) return 0;
-    
+
     const inFlow = forward.inFlow || 0;
     const outFlow = forward.outFlow || 0;
-    
+
     // 后端已按计费类型处理流量，前端直接使用入站+出站总和
     return inFlow + outFlow;
   };
+
+  const totalUsedFlow = calculateUserTotalUsedFlow();
+  const usedFlowInGb = totalUsedFlow / (1024 * 1024 * 1024);
+  const safeUsedFlowInGb = Number.isFinite(usedFlowInGb) ? Math.max(usedFlowInGb, 0) : 0;
+  const formattedUsedFlowInGb = `${safeUsedFlowInGb.toFixed(2)} GB`;
+  const formattedTotalFlowInGb = userInfo.flow === 99999
+    ? '无限制'
+    : `${(userInfo.flow || 0)} GB`;
+  const expirationInfo = getExpirationInfo(userInfo.expTime);
 
       if (loading) {
       return (
@@ -597,14 +654,21 @@ export default function DashboardPage() {
              <CardBody className="p-3 lg:p-4">
                <div className="flex flex-col space-y-2">
                  <div className="flex items-center justify-between">
-                   <p className="text-xs lg:text-sm text-default-600 truncate">总流量</p>
+                   <p className="text-xs lg:text-sm text-default-600 truncate">用户有效期</p>
                    <div className="p-1.5 lg:p-2 bg-blue-100 dark:bg-blue-500/20 rounded-lg flex-shrink-0">
                      <svg className="w-4 h-4 lg:w-5 lg:h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                      </svg>
                    </div>
                  </div>
-                 <p className="text-base lg:text-xl font-bold text-foreground truncate">{formatFlow(userInfo.flow, 'gb')}</p>
+                 <p className="text-base lg:text-xl font-bold text-foreground truncate">
+                   {expirationInfo.dateText}
+                   <span
+                     className={`ml-1 ${expirationInfo.isExpiringSoon ? 'text-red-500 dark:text-red-400' : 'text-default-500 dark:text-default-400'}`}
+                   >
+                     /{expirationInfo.remainingText}
+                   </span>
+                 </p>
                </div>
              </CardBody>
            </Card>
@@ -613,14 +677,16 @@ export default function DashboardPage() {
              <CardBody className="p-3 lg:p-4">
                <div className="flex flex-col space-y-2">
                  <div className="flex items-center justify-between">
-                   <p className="text-xs lg:text-sm text-default-600 truncate">已用流量</p>
+                   <p className="text-xs lg:text-sm text-default-600 truncate">已用流量/总流量</p>
                    <div className="p-1.5 lg:p-2 bg-green-100 dark:bg-green-500/20 rounded-lg flex-shrink-0">
                      <svg className="w-4 h-4 lg:w-5 lg:h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
                        <path fillRule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clipRule="evenodd" />
                      </svg>
                    </div>
                  </div>
-                 <p className="text-base lg:text-xl font-bold text-foreground truncate">{formatFlow(calculateUserTotalUsedFlow())}</p>
+                 <p className="text-base lg:text-xl font-bold text-foreground truncate">
+                   {formattedUsedFlowInGb} / {formattedTotalFlowInGb}
+                 </p>
                  <div className="mt-1">
                    {renderProgressBar(calculateUsagePercentage('flow'), 'sm', userInfo.flow === 99999)}
                    <div className="flex items-center justify-between mt-1">
