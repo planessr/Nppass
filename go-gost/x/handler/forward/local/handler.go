@@ -101,7 +101,7 @@ func (h *forwardHandler) Handle(ctx context.Context, conn net.Conn, opts ...hand
 	}
 
 	network := "tcp"
-	if _, ok := conn.(net.PacketConn); ok {
+	if conn.RemoteAddr().Network() == "udp" {
 		network = "udp"
 	}
 	ro.Network = network
