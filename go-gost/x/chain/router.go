@@ -60,7 +60,7 @@ func (r *Router) Dial(ctx context.Context, network, address string) (conn net.Co
 	}
 
 	if network == "udp" || network == "udp4" || network == "udp6" {
-		if _, ok := conn.(net.PacketConn); !ok {
+		if _, ok := conn.(net.PacketConn); !ok && conn.RemoteAddr().Network() != "udp" {
 			return &packetConn{conn}, nil
 		}
 	}
