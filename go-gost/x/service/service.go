@@ -460,7 +460,7 @@ func (c *detectConn) Read(b []byte) (int, error) {
 
 func detectProtocol(data []byte, conn net.Conn) (blocked bool) {
 	// 如果是 UDP，则不检测，直接放行
-	if _, ok := conn.(*net.UDPConn); ok {
+	if conn.RemoteAddr().Network() == "udp" || conn.RemoteAddr().Network() == "udp4" || conn.RemoteAddr().Network() == "udp6" {
 		return false
 	}
 
