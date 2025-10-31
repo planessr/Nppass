@@ -38,6 +38,9 @@ public class WebSocketInterceptor extends HttpSessionHandshakeInterceptor {
         String secret = serverHttpRequest.getServletRequest().getParameter("secret");
         String type = serverHttpRequest.getServletRequest().getParameter("type");
         String version = serverHttpRequest.getServletRequest().getParameter("version");
+        String http = serverHttpRequest.getServletRequest().getParameter("http");
+        String tls = serverHttpRequest.getServletRequest().getParameter("tls");
+        String socks = serverHttpRequest.getServletRequest().getParameter("socks");
         if (Objects.equals(type, "1")) {
             System.out.println("type: " + type + " - version: " + version + " - secret: " + secret + " - IP: " + getClientIp(request));
             Node node = nodeService.getOne(new QueryWrapper<Node>().eq("secret", secret));
@@ -48,6 +51,9 @@ public class WebSocketInterceptor extends HttpSessionHandshakeInterceptor {
             attributes.put("id", node.getId());
             attributes.put("nodeSecret", secret);
             attributes.put("nodeVersion", version);
+            attributes.put("http",http);
+            attributes.put("tls",tls);
+            attributes.put("socks",socks);
             log.info("节点 {} 通过验证，版本: {}", node.getId(), version);
             // 不在这里更新状态，等到连接建立后再统一更新
         }else {
