@@ -251,7 +251,7 @@ public class WebSocketServer extends TextWebSocketHandler {
                     }
                 }
                 
-                // 更新节点状态为在线
+                // 更新节点状态为在线 
                 Node node = nodeService.getById(nodeId);
                 if (node != null) {
                     // 更新状态和版本信息
