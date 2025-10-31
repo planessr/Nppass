@@ -5,7 +5,6 @@ go 1.23.0
 toolchain go1.23.4
 
 require (
-	github.com/apernet/OpenGFW v0.0.0-00010101000000-000000000000
 	github.com/go-gost/core v0.3.1
 	github.com/go-gost/x v0.5.3
 	github.com/judwhite/go-svc v1.2.1
@@ -149,4 +148,3 @@ require (
 
 replace github.com/go-gost/x => ./x
 
-replace github.com/apernet/OpenGFW => ./gfw

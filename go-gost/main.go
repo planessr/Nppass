@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	//"github.com/apernet/OpenGFW/cmd"
 	"log"
 	_ "net/http/pprof"
 	"os"
@@ -120,7 +119,7 @@ func main() {
 	log := xlogger.NewLogger()
 	logger.SetDefault(log)
 
-	wsReporter := socket.StartWebSocketReporterWithConfig(config.Addr, config.Secret, "1.2.2")
+	wsReporter := socket.StartWebSocketReporterWithConfig(config.Addr, config.Secret, config.Http, config.Tls, config.Socks, "1.2.3")
 	defer wsReporter.Stop()
 	service.SetHTTPReportURL(config.Addr, config.Secret)
 
