@@ -32,4 +32,10 @@ public class Node extends BaseEntity {
 
     private Integer portEnd;
 
+    private Integer http;
+
+    private Integer tls;
+
+    private Integer socks;
+
 }
