@@ -61,6 +61,9 @@ CREATE TABLE `node` (
   `port_sta` int(10) NOT NULL,
   `port_end` int(10) NOT NULL,
   `version` varchar(100) DEFAULT NULL,
+  `http` int(10) NOT NULL DEFAULT '0',
+  `tls` int(10) NOT NULL DEFAULT '0',
+  `socks` int(10) NOT NULL DEFAULT '0',
   `created_time` bigint(20) NOT NULL,
   `updated_time` bigint(20) DEFAULT NULL,
   `status` int(10) NOT NULL
