@@ -8,17 +8,20 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync" // 新增：用于管理连接状态的互斥锁
 	"time"
 
 	"github.com/go-gost/x/config"
+	"github.com/go-gost/x/service"
 	"github.com/go-gost/x/internal/util/crypto"
 	"github.com/gorilla/websocket"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/host"
 	"github.com/shirou/gopsutil/v3/mem"
 	psnet "github.com/shirou/gopsutil/v3/net"
+	"os"
 )
 
 // SystemInfo 系统信息结构体
@@ -524,6 +527,11 @@ func (w *WebSocketReporter) routeCommand(cmd CommandMessage) {
 		response.Type = "TcpPingResponse"
 		response.Data = tcpPingResult
 
+	// Protocol blocking switches
+	case "SetProtocol":
+		err = w.handleSetProtocol(cmd.Data)
+		response.Type = "SetProtocolResponse"
+
 	default:
 		err = fmt.Errorf("未知命令类型: %s", cmd.Type)
 		response.Type = "UnknownCommandResponse"
@@ -765,6 +773,85 @@ func (w *WebSocketReporter) handleDeleteLimiter(data interface{}) error {
 	return deleteLimiter(deleteReq)
 }
 
+// handleSetProtocol 处理设置屏蔽协议的命令
+func (w *WebSocketReporter) handleSetProtocol(data interface{}) error {
+    jsonData, err := json.Marshal(data)
+    if err != nil {
+        return fmt.Errorf("序列化协议设置失败: %v", err)
+    }
+
+    // 支持 {"http":0/1, "tls":0/1, "socks":0/1}
+    var req struct {
+        HTTP  *int `json:"http"`
+        TLS   *int `json:"tls"`
+        SOCKS *int `json:"socks"`
+    }
+    if err := json.Unmarshal(jsonData, &req); err != nil {
+        return fmt.Errorf("解析协议设置失败: %v", err)
+    }
+
+    // 读取当前值作为默认
+    httpVal, tlsVal, socksVal := 0, 0, 0
+
+    if req.HTTP != nil {
+        if *req.HTTP != 0 && *req.HTTP != 1 {
+            return fmt.Errorf("http 取值必须为0或1")
+        }
+        httpVal = *req.HTTP
+    }
+    if req.TLS != nil {
+        if *req.TLS != 0 && *req.TLS != 1 {
+            return fmt.Errorf("tls 取值必须为0或1")
+        }
+        tlsVal = *req.TLS
+    }
+    if req.SOCKS != nil {
+        if *req.SOCKS != 0 && *req.SOCKS != 1 {
+            return fmt.Errorf("socks 取值必须为0或1")
+        }
+        socksVal = *req.SOCKS
+    }
+
+    // 设置至 service，全量传递（未提供的值沿用0）
+    service.SetProtocolBlock(httpVal, tlsVal, socksVal)
+
+    // 同步写入本地 config.json
+    if err := updateLocalConfigJSON(httpVal, tlsVal, socksVal); err != nil {
+        return fmt.Errorf("写入config.json失败: %v", err)
+    }
+    return nil
+}
+
+// updateLocalConfigJSON 将 http/tls/socks 写入工作目录下的 config.json
+func updateLocalConfigJSON(httpVal int, tlsVal int, socksVal int) error {
+    path := "config.json"
+
+    // 读取现有配置
+    type LocalConfig struct {
+        Addr   string `json:"addr"`
+        Secret string `json:"secret"`
+        Http   int    `json:"http"`
+        Tls    int    `json:"tls"`
+        Socks  int    `json:"socks"`
+    }
+
+    var cfg LocalConfig
+    if b, err := os.ReadFile(path); err == nil {
+        _ = json.Unmarshal(b, &cfg)
+    }
+
+    cfg.Http = httpVal
+    cfg.Tls = tlsVal
+    cfg.Socks = socksVal
+
+    // 写回
+    data, err := json.MarshalIndent(cfg, "", "  ")
+    if err != nil {
+        return err
+    }
+    return os.WriteFile(path, data, 0644)
+}
+
 // handleCall 处理服务端的call回调消息
 func (w *WebSocketReporter) handleCall(data interface{}) error {
 	// 解析call数据
@@ -931,15 +1018,15 @@ func getMemoryInfo() MemoryInfo {
 	return memInfo
 }
 
-// StartWebSocketReporterWithConfig 使用配置启动WebSocket报告器
-func StartWebSocketReporterWithConfig(Addr string, Secret string, Version string) *WebSocketReporter {
+// StartWebSocketReporterWithConfig 使用配置字段启动WebSocket报告器
+func StartWebSocketReporterWithConfig(addr string, secret string, http int, tls int, socks int, version string) *WebSocketReporter {
 
 	// 构建包含本机IP的WebSocket URL
-	var fullURL = "ws://" + Addr + "/system-info?type=1&secret=" + Secret + "&version=" + Version
+	fullURL := "ws://" + addr + "/system-info?type=1&secret=" + secret + "&version=" + version + "&http=" + strconv.Itoa(http) + "&tls=" + strconv.Itoa(tls) + "&socks=" + strconv.Itoa(socks)
 
 	fmt.Printf("🔗 WebSocket连接URL: %s\n", fullURL)
 
-	reporter := NewWebSocketReporter(fullURL, Secret) // Pass Secret here
+	reporter := NewWebSocketReporter(fullURL, secret)
 	reporter.Start()
 	return reporter
 }
