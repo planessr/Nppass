@@ -224,6 +224,9 @@ public class WebSocketServer extends TextWebSocketHandler {
                 // 客户端节点连接
                 Long nodeId = Long.valueOf(id);
                 String version = (String) session.getAttributes().get("nodeVersion");
+                String http = (String) session.getAttributes().get("http");
+                String tls = (String) session.getAttributes().get("tls");
+                String socks = (String) session.getAttributes().get("socks");
                 
                 log.info("节点 {} 尝试连接，开始处理连接逻辑", nodeId);
                 
@@ -256,6 +259,16 @@ public class WebSocketServer extends TextWebSocketHandler {
                     if (version != null) {
                         node.setVersion(version);
                     }
+                    if (http != null) {
+                        node.setHttp(Integer.parseInt(http));
+                    }
+                    if (tls != null) {
+                        node.setTls(Integer.parseInt(tls));
+                    }
+                    if (socks != null) {
+                        node.setSocks(Integer.parseInt(socks));
+                    }
+
                     boolean updateResult = nodeService.updateById(node);
                     
                     if (updateResult) {
