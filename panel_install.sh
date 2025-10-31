@@ -537,6 +537,65 @@ UPDATE \`node\`
 SET \`port_sta\` = 1000, \`port_end\` = 65535
 WHERE \`port_sta\` IS NULL OR \`port_end\` IS NULL;
 
+-- node 表：添加 http、tls、socks 字段（如果不存在）
+SET @sql = (
+  SELECT IF(
+    NOT EXISTS (
+      SELECT 1
+      FROM information_schema.COLUMNS
+      WHERE table_schema = DATABASE()
+        AND table_name = 'node'
+        AND column_name = 'http'
+    ),
+    'ALTER TABLE \`node\` ADD COLUMN \`http\` INT(10) DEFAULT 0 COMMENT "HTTP 服务端口";',
+    'SELECT "Column \`http\` already exists in \`node\`";'
+  )
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(
+    NOT EXISTS (
+      SELECT 1
+      FROM information_schema.COLUMNS
+      WHERE table_schema = DATABASE()
+        AND table_name = 'node'
+        AND column_name = 'tls'
+    ),
+    'ALTER TABLE \`node\` ADD COLUMN \`tls\` INT(10) DEFAULT 0 COMMENT "TLS 服务端口";',
+    'SELECT "Column \`tls\` already exists in \`node\`";'
+  )
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(
+    NOT EXISTS (
+      SELECT 1
+      FROM information_schema.COLUMNS
+      WHERE table_schema = DATABASE()
+        AND table_name = 'node'
+        AND column_name = 'socks'
+    ),
+    'ALTER TABLE \`node\` ADD COLUMN \`socks\` INT(10) DEFAULT 0 COMMENT "SOCKS 服务端口";',
+    'SELECT "Column \`socks\` already exists in \`node\`";'
+  )
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- 为现有节点设置 http、tls、socks 默认值
+UPDATE \`node\`
+SET \`http\` = IFNULL(\`http\`, 0),
+    \`tls\` = IFNULL(\`tls\`, 0),
+    \`socks\` = IFNULL(\`socks\`, 0);
+
+
 -- tunnel 表：删除废弃字段（如果存在）
 SET @sql = (
   SELECT IF(
