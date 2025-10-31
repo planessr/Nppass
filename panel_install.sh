@@ -595,7 +595,6 @@ SET \`http\` = IFNULL(\`http\`, 0),
     \`tls\` = IFNULL(\`tls\`, 0),
     \`socks\` = IFNULL(\`socks\`, 0);
 
-
 -- tunnel 表：删除废弃字段（如果存在）
 SET @sql = (
   SELECT IF(
