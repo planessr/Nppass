@@ -2,9 +2,11 @@ package com.admin.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.admin.common.dto.GostDto;
 import com.admin.common.dto.NodeDto;
 import com.admin.common.dto.NodeUpdateDto;
 import com.admin.common.lang.R;
+import com.admin.common.utils.WebSocketServer;
 import com.admin.entity.Node;
 import com.admin.entity.Tunnel;
 import com.admin.entity.ViteConfig;
@@ -13,6 +15,7 @@ import com.admin.mapper.TunnelMapper;
 import com.admin.service.NodeService;
 import com.admin.service.TunnelService;
 import com.admin.service.ViteConfigService;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -22,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -114,9 +119,33 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
     @Override
     public R updateNode(NodeUpdateDto nodeUpdateDto) {
         // 1. 验证节点是否存在
-        if (!isNodeExists(nodeUpdateDto.getId())) {
+        Node node = this.getById(nodeUpdateDto.getId());
+        if (node == null) {
             return R.err(ERROR_NODE_NOT_FOUND);
         }
+
+        //1.1 如果节点在线 且传入更新的 http/tls/socks 任意一项与数据库不一致，则通过 WS 通知节点更新设置
+        boolean online = node.getStatus() != null && node.getStatus() == 1;
+        Integer newHttp = nodeUpdateDto.getHttp();
+        Integer newTls = nodeUpdateDto.getTls();
+        Integer newSocks = nodeUpdateDto.getSocks();
+
+        boolean httpChanged = newHttp != null && !newHttp.equals(node.getHttp());
+        boolean tlsChanged = newTls != null && !newTls.equals(node.getTls());
+        boolean socksChanged = newSocks != null && !newSocks.equals(node.getSocks());
+
+        if (online && (httpChanged || tlsChanged || socksChanged)) {
+            JSONObject req = new JSONObject();
+            req.put("http", newHttp);
+            req.put("tls", newTls);
+            req.put("socks", newSocks);
+
+            GostDto gostResult = WebSocketServer.send_msg(node.getId(), req, "SetProtocol");
+            if (!Objects.equals(gostResult.getMsg(), "OK")){
+                return R.err(gostResult.getMsg());
+            }
+        }
+
 
         // 2. 构建更新对象并执行更新
         Node updateNode = buildUpdateNode(nodeUpdateDto);
@@ -153,7 +182,8 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
     @Override
     public R deleteNode(Long id) {
         // 1. 验证节点是否存在
-        if (!isNodeExists(id)) {
+        Node node = this.getById(id);
+        if (node == null) {
             return R.err(ERROR_NODE_NOT_FOUND);
         }
 
@@ -225,7 +255,9 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
         node.setServerIp(nodeUpdateDto.getServerIp());
         node.setPortSta(nodeUpdateDto.getPortSta());
         node.setPortEnd(nodeUpdateDto.getPortEnd());
-        
+        node.setHttp(nodeUpdateDto.getHttp());
+        node.setTls(nodeUpdateDto.getTls());
+        node.setSocks(nodeUpdateDto.getSocks());
         // 验证端口范围
         validatePortRange(node.getPortSta(), node.getPortEnd());
         
@@ -242,15 +274,6 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
         nodeList.forEach(node -> node.setSecret(null));
     }
 
-    /**
-     * 检查节点是否存在
-     * 
-     * @param nodeId 节点ID
-     * @return 节点是否存在
-     */
-    private boolean isNodeExists(Long nodeId) {
-        return this.getById(nodeId) != null;
-    }
 
     /**
      * 检查节点使用情况
@@ -335,12 +358,12 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
      */
     private R buildInstallCommand(Node node) {
         ViteConfig viteConfig = viteConfigService.getOne(new QueryWrapper<ViteConfig>().eq("name", "ip"));
-        if (viteConfig == null) return R.err("请前往网站配置中设置server-ip");
+        if (viteConfig == null) return R.err("请先前往网站配置中设置ip");
 
         StringBuilder command = new StringBuilder();
         
         // 第一部分：下载安装脚本  
-        command.append("curl -L https://raw.githubusercontent.com/planessr/Nppass/refs/heads/main/install.sh")
+        command.append("curl -L https://raw.githubusercontent.com/bqlpfy/flux-panel/refs/heads/main/install.sh")
                .append(" -o ./install.sh && chmod +x ./install.sh && ");
         
         // 处理服务器地址，如果是IPv6需要添加方括号
@@ -435,4 +458,3 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
     }
 
 }
-
