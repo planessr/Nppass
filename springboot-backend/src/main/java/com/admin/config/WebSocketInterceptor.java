@@ -55,7 +55,7 @@ public class WebSocketInterceptor extends HttpSessionHandshakeInterceptor {
             attributes.put("tls",tls);
             attributes.put("socks",socks);
             log.info("节点 {} 通过验证，版本: {}", node.getId(), version);
-            // 不在这里更新状态，等到连接建立后再统一更新
+            // 不在这里更新状态， 等到连接建立后再统一更新
         }else {
             boolean b = JwtUtil.validateToken(secret);
             if (!b) return false;
