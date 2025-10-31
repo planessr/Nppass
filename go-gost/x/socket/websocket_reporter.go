@@ -1159,7 +1159,7 @@ func isValidHostname(hostname string) bool {
 	return true
 }
 
-// preprocessDurationFields 预处理 JSON 数据中的 duration 字段
+// preprocessDurationFields 预处理 JSON 数据中的 duration  字段
 func (w *WebSocketReporter) preprocessDurationFields(jsonData []byte) ([]byte, error) {
 	var rawData interface{}
 	if err := json.Unmarshal(jsonData, &rawData); err != nil {
