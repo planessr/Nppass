@@ -979,7 +979,7 @@ export default function NodePage() {
                 <Alert
                         color="primary"
                         variant="flat"
-                        description="服务器IP：服务器连接地址，入口IP：用户连接地址。"
+                        description="服务器IP：服务器连接地址，\n入口IP：用户连接地址。"
                         className="mt-4"
                       />
               </div>
