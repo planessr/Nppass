@@ -2,7 +2,7 @@
 
 基于gost 可视化转发面板
 <div align="center">
-  <img src="https://xcloud.hljone.com/f/obS0/nppass.png" alt="Nppass Logo" width="200" style="border-radius: 20px; overflow: hidden;">
+  <img src="https://xcloud.hljone.com/f/X6Tj/Nppass.png" alt="Nppass Logo" width="200" style="border-radius: 20px; overflow: hidden;">
 </div>
 
 ---
